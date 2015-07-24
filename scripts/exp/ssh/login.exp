@@ -1,0 +1,31 @@
+#!/usr/bin/expect -f  
+set ipaddress [lindex $argv 0]  
+set username [lindex $argv 1]  
+set passwd [lindex $argv 2]  
+if { $argc != 3 } {  
+ puts stderr $passwd  
+ puts stderr $username  
+ exit 1  
+ }  
+set timeout 10
+spawn ssh -p1088 $username@$ipaddress  
+expect {  
+"yes/no" { send "yes\r";exp_continue }  
+"password:" { send "$passwd\r" }  
+}  
+expect "*from*"
+send "sys\r"  
+expect "*]"
+send "undo snmp-agent community public\r"
+expect "*]"
+send "snmp-agent community read public_2015\r"
+expect "*]"
+send "snmp-agent sys-info version v2c v3"
+expect "*]"
+send "quit\r"
+expect {
+"*>" { send "save\r";exp_continue }
+"*]" { send "Y\r" }
+}
+expect eof 
+exit 

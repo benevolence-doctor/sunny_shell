@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f  
+set ipaddress [lindex $argv 0]  
+set username [lindex $argv 1]  
+set passwd [lindex $argv 2]  
+if { $argc != 3 } {  
+ puts stderr $passwd  
+ puts stderr $username  
+ exit 1  
+ }  
+set timeout 5
+spawn ssh -p12 $username@$ipaddress  
+expect {  
+"yes/no" { send "yes\r";exp_continue }  
+"password:" { send "$passwd\r" }  
+}  
+#expect "]*"  
+expect "*from*"
+send "free -m\r"  
+expect eof 
+exit 

@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+set ipaddress [lindex $argv 0]  
+spawn telnet $ipaddress
+expect "Username:"
+send "jadebird\n"
+expect "Password:"
+send "public\n"
+expect "*>"
+send "sys\n"
+expect "*]"
+send "display arp\n"
+expect "*]"
+send "quit\n"
+expect eof 

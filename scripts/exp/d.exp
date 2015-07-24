@@ -1,0 +1,21 @@
+#!/usr/bin/expect
+set ip [lindex $argv 0]
+set passwd xx 
+set username yunwei
+log_user 0 
+set timeout -1
+spawn ssh -p 9797 $username@$ip
+expect {
+"*yes/no*" {send "yes\r"}
+"*password:" {send "$passwd\r"}
+       } 
+expect "*yunwei@*"
+send "su - root\r"
+expect "Password:"
+send "xxx\r"
+#interact
+expect "*root@*"
+send "echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all\r"
+send "exit\r"
+send "exit\r"
+expect eof
